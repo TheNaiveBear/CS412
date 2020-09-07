@@ -12,10 +12,10 @@ int main()
     {
         cout << word << " ";
     }
-    cout << endl << endl;
+    cout << endl << endl << "Enter Anything:" << endl;
     string x;
     getline(cin,x,'\n');
-    cout << endl << x << endl;
+    cout << endl << "You Entered: " << x << endl;
     
     
     
