@@ -14,6 +14,12 @@ int main()
     }
     cout << endl << endl;
     string x;
-    cin >> x;
+    getline(cin,x,'\n');
     cout << endl << x << endl;
+    
+    
+    
+    cout << endl;
+    system("pause");
+    return 0;
 }
