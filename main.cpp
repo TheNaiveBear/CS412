@@ -19,7 +19,7 @@ int main()
     
     
     
-    cout << endl;
+    cout << endl << "win" << endl;
     system("pause");
     return 0;
 }
