@@ -2,15 +2,17 @@
     "version": "2.0.0",
     "tasks": [
       {
-        "type": "shell",
+        "type": "process",
         "label": "cl.exe build active file",
-        "command": "cl.exe",
+        "command": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Auxiliary\\Build\\vcvars32.bat",
         "args": [
+          "&",
+          "cl.exe",
           "/Zi",
           "/EHsc",
           "/Fe:",
           "${fileDirname}\\${fileBasenameNoExtension}.exe",
-          "${file}"
+          "main.cpp"
         ],
         "problemMatcher": ["$msCompile"],
         "group": {
@@ -19,4 +21,4 @@
         }
       }
     ]
-  }
+}

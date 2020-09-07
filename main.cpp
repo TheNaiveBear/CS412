@@ -12,7 +12,8 @@ int main()
     {
         cout << word << " ";
     }
-    cout << endl;
+    cout << endl << endl;
+    string x;
+    cin >> x;
+    cout << endl << x << endl;
 }
-
-//"C:\\Program Files (x86)\\mingw-w64\\i686-8.1.0-posix-dwarf-rt_v6-rev0\\mingw32\\bin\\gdb.exe"
