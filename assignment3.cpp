@@ -125,6 +125,8 @@ public:
         }
         dist[s] = 0;  
         
+        //this is the loop where the length is calculated. this is what would have to be diffrent to calculate the longest path of a single weight
+        //im not sure how to get it to look for a path of a single weight without destroying the programs runtime
         while (Stack.empty() == false) {   
             //get the next node forom the sort
             int u = Stack.top();  
@@ -165,6 +167,8 @@ int main()
     bool val, cont = true;
     string ans;
 
+    int start_node = 1;
+
     cout << "Input percent chance any two nodes will link: ";
     cin >> percent;
     cout << endl;
@@ -175,7 +179,7 @@ int main()
         cin >> n;
 
         Graph g(n,percent);
-        g.longestPath(1);
+        g.longestPath(start_node);
 
         //loop to loop through the program for multiple entries
         cout << endl << endl << "Continue? (y/n): ";
@@ -197,6 +201,6 @@ int main()
     }
 
     cout << endl << endl;
-    system("pause");
+    std::system("pause");
     return 0;
 }
