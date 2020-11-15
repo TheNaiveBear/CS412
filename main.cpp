@@ -1,182 +1,303 @@
-#include <iostream> 
-#include <string>
+#include <iostream>
 #include <vector>
 #include <time.h>
-#include <algorithm>
 using namespace std; 
 
-typedef  pair<int, int> iPair; 
-
-struct DSets 
-{ 
-    int *parent, *rnk; 
-    int n; 
-  
-    // constructor
-    DSets(int n) 
-    { 
-        // give memory
-        this->n = n; 
-        parent = new int[n+1]; 
-        rnk = new int[n+1]; 
-  
-        //set all vertacies to 0
-        for (int i = 0; i <= n; i++) 
-        { 
-            rnk[i] = 0; 
-  
-            //every element is its owbn parent
-            parent[i] = i; 
-        } 
-    } 
-  
-    //find the parent node of u
-    int find(int u) 
-    { 
-        if (u != parent[u]) 
-            parent[u] = find(parent[u]); 
-        return parent[u]; 
-    } 
-    
-    //merge by rank
-    void merge(int x, int y) 
-    { 
-        x = find(x), y = find(y); 
-  
-        if (rnk[x] > rnk[y]) 
-            parent[y] = x; 
-        else //if rnk(x) <= rnk(y)
-            parent[x] = y; 
-  
-        if (rnk[x] == rnk[y]) 
-            rnk[y]++; 
-    } 
-}; 
-
-//class to represent a graph from the list
-class Graph 
+void pause()
 {
-    //number of verticies
-    int V;
+    cout << endl << endl;
+    system("pause");
+}
 
-    vector<pair<int, iPair>> edges;
+void start()
+{
+    srand (time(NULL));
+}
+
+class Graph
+{
+    vector<vector<int>> tree; //matrix holding adjecency list
+    int N; //number of vertacies
 
 public:
-    //constructer
-    Graph(int V) 
-    { 
-        this -> V = V; 
-    }
-    //constructer w/ random graph generation
-    Graph(int V, int percent)
+    //constructor
+    Graph(int n)
     {
-        this -> V = V;
+        N = n;
+        tree.resize(N);
+    }
 
-        srand (time(NULL));
-        
-        for (int i = 0; i < V; i++)
+    Graph(int n, int p)
+    {
+        N = n;
+        tree.resize(N);
+
+        //loop trhough every combination, adding a branch with a random percentage p
+        for (int i = 0; i < N; i++)
         {
-            for (int j = i; j < V; j++)
+            for (int j = i; j < N; j++)
             {
-                if (percent >= rand() % 100 + 1)
+                if (i != j && p >= rand() % 100 + 1)
                 {
-                    addEdge(i,j,rand() % (V/10) + 1);
+                    add(i,j);
                 }
-            }
-        } 
-    }
-
-    //function to add an edge
-    void addEdge(int u, int v, int w) 
-    { 
-        edges.push_back({w, {u, v}}); 
-    } 
-
-    //function to find MST
-    int MST()
-    {
-        int mst_wt = 0;
-   
-        //sort edges in increasing order
-        sort(edges.begin(), edges.end()); 
-    
-        //create disjoint sets
-        DSets ds(V); 
-
-        //itterate trhough the sorted edges
-        vector< pair<int, iPair> >::iterator it; 
-        for (it=edges.begin(); it!=edges.end(); it++) 
-        { 
-            int u = it->second.first; 
-            int v = it->second.second; 
-    
-            int set_u = ds.find(u); 
-            int set_v = ds.find(v); 
-
-            //check if a cycle
-            if (set_u != set_v) 
-            { 
-                //print current edge as its in MST
-                cout << u << " - " << v << endl; 
-
-                //update weight
-                mst_wt += it->first; 
-
-                //merge the two sets
-                ds.merge(set_u, set_v); 
-            } 
-        } 
-    
-        return mst_wt; 
-    }
-};
-
-int main()
-{
-    //the chance that any two nodes will be connected
-    int percent, n;
-    bool val, cont = true;
-    string ans;
-
-    int start_node = 1;
-
-    cout << "Input percent chance any two nodes will link: ";
-    cin >> percent;
-    cout << endl;
-    
-    //loop to run program multiple times
-    while (cont == true)
-    {
-        cout << "Input number of verticies: ";
-        cin >> n;
-
-        Graph g(n,percent);
-        
-        cout << "Edges of MST are \n"; 
-        int mst_wt = g.MST(); 
-  
-        cout << "\nWeight of MST is " << mst_wt; 
-
-        //loop to loop through the program for multiple entries
-        cout << endl << endl << "Continue? (y/n): ";
-        val = false;
-        while (val == false)
-        {
-            getline(cin,ans,'\n');
-            if (ans == "y")
-            {
-                cout << endl;
-                val = true;
-            }
-            else if (ans == "n")
-            {
-                cont = false;
-                val = true;
             }
         }
     }
 
-    cout << endl << endl;
-    std::system("pause");
+    ~Graph()
+    {
+        tree.clear();
+    }
+    
+    void add(int u, int v)
+    {
+        tree[u].push_back(v); 
+        tree[v].push_back(u);
+    }
+
+    //loop through the matrix outputting the adjacency lists
+    void print() 
+    { 
+        for (int n = 0; n < N; ++n) 
+        { 
+            cout << endl << "Adjacency list of vertex " << n << endl << "head"; 
+            for (auto x : tree[n]) 
+            {
+                cout << " -> " << x; 
+            }
+            cout << endl; 
+        } 
+    } 
+};
+
+Graph tree2a()
+{
+    Graph tree(12);
+    tree.add(0,1);
+    tree.add(1,2);
+    tree.add(2,3);
+    tree.add(0,4);
+    tree.add(4,5);
+    tree.add(5,6);
+    tree.add(6,7);
+    tree.add(0,8);
+    tree.add(8,9);
+    tree.add(9,10);
+    tree.add(10,11);
+    return tree;
+}
+
+Graph tree2b()
+{
+    Graph tree(13);
+    tree.add(0,1);
+    tree.add(1,2);
+    tree.add(2,3);
+    tree.add(3,4);
+    tree.add(0,5);
+    tree.add(5,6);
+    tree.add(6,7);
+    tree.add(7,8);
+    tree.add(0,9);
+    tree.add(9,10);
+    tree.add(10,11);
+    tree.add(11,12);
+    return tree;
+}
+
+Graph tree3a()
+{
+    Graph tree(74);
+    tree.add(0,1);
+    tree.add(1,2);
+    tree.add(2,3);
+    tree.add(3,4);
+    tree.add(4,5);
+    tree.add(5,6);
+    tree.add(5,7);
+    tree.add(5,8);
+    tree.add(8,9);
+    tree.add(8,10);
+    tree.add(10,11);
+    tree.add(11,12);
+    tree.add(4,13);
+    tree.add(13,14);
+    tree.add(13,15);
+    tree.add(4,16);
+    tree.add(16,17);
+    tree.add(16,18);
+    tree.add(16,19);
+    tree.add(16,20);
+    tree.add(20,21);
+    tree.add(21,22);
+    tree.add(22,23);
+    tree.add(20,24);
+    tree.add(24,25);
+    tree.add(24,26);
+    tree.add(4,27);
+    tree.add(27,28);
+    tree.add(27,29);
+    tree.add(29,30);
+    tree.add(29,31);
+    tree.add(27,32);
+    tree.add(32,33);
+    tree.add(32,34);
+    tree.add(34,35);
+    tree.add(34,36);
+    tree.add(0,37);
+    tree.add(37,38);
+    tree.add(38,39);
+    tree.add(39,40);
+    tree.add(40,41);
+    tree.add(41,42);
+    tree.add(42,43);
+    tree.add(43,44);
+    tree.add(42,45);
+    tree.add(45,46);
+    tree.add(42,47);
+    tree.add(47,48);
+    tree.add(47,49);
+    tree.add(49,50);
+    tree.add(41,51);
+    tree.add(51,52);
+    tree.add(51,53);
+    tree.add(51,54);
+    tree.add(54,55);
+    tree.add(54,56);
+    tree.add(54,57);
+    tree.add(57,58);
+    tree.add(57,59);
+    tree.add(41,60);
+    tree.add(41,61);
+    tree.add(41,62);
+    tree.add(62,63);
+    tree.add(62,64);
+    tree.add(64,65);
+    tree.add(64,66);
+    tree.add(62,67);
+    tree.add(67,68);
+    tree.add(68,69);
+    tree.add(67,70);
+    tree.add(67,71);
+    tree.add(71,72);
+    tree.add(71,73);
+    return tree;
+}
+
+Graph tree3b()
+{
+    Graph tree(74);
+    tree.add(0,1);
+    tree.add(1,2);
+    tree.add(1,3);
+    tree.add(1,4);
+    tree.add(4,5);
+    tree.add(4,6);
+    tree.add(6,7);
+    tree.add(6,8);
+    tree.add(0,12);
+    tree.add(12,13);
+    tree.add(12,14);
+    tree.add(12,15);
+    tree.add(12,16);
+    tree.add(16,17);
+    tree.add(17,18);
+    tree.add(17,19);
+    tree.add(16,20);
+    tree.add(20,21);
+    tree.add(20,22);
+    tree.add(0,23);
+    tree.add(23,24);
+    tree.add(23,25);
+    tree.add(25,26);
+    tree.add(25,27);
+    tree.add(23,28);
+    tree.add(28,29);
+    tree.add(28,30);
+    tree.add(30,31);
+    tree.add(30,32);
+    tree.add(0,33);
+    tree.add(33,34);
+    tree.add(34,35);
+    tree.add(35,36);
+    tree.add(36,37);
+    tree.add(37,38);
+    tree.add(38,39);
+    tree.add(39,40);
+    tree.add(40,41);
+    tree.add(41,42);
+    tree.add(42,43);
+    tree.add(43,44);
+    tree.add(42,45);
+    tree.add(45,46);
+    tree.add(42,47);
+    tree.add(47,48);
+    tree.add(47,49);
+    tree.add(49,50);
+    tree.add(41,51);
+    tree.add(51,52);
+    tree.add(51,53);
+    tree.add(51,54);
+    tree.add(54,55);
+    tree.add(54,56);
+    tree.add(54,57);
+    tree.add(57,58);
+    tree.add(57,59);
+    tree.add(41,60);
+    tree.add(41,61);
+    tree.add(41,62);
+    tree.add(62,63);
+    tree.add(62,64);
+    tree.add(64,65);
+    tree.add(64,66);
+    tree.add(62,67);
+    tree.add(67,68);
+    tree.add(68,69);
+    tree.add(67,70);
+    tree.add(67,71);
+    tree.add(71,72);
+    tree.add(71,73);
+    return tree;
+}
+
+Graph tree4()
+{
+    Graph tree(12);
+    tree.add(0,1);
+    tree.add(0,2);
+    tree.add(0,3);
+    tree.add(0,4);
+    tree.add(0,5);
+    tree.add(3,6);
+    tree.add(3,7);
+    tree.add(4,8);
+    tree.add(4,9);
+    tree.add(5,10);
+    tree.add(5,11);
+    return tree;
+}
+
+int main() 
+{
+    start();
+    int p = 30; //percent chance of branch existing
+
+    Graph trees[5] = {tree2a(), tree2b(), tree3a(), tree3b(), tree4()};
+    Graph randomTrees[10] = {Graph(30,p), Graph(60,p), Graph(90,p), Graph(120,p), Graph(150,p), Graph(180,p), Graph(210,p), Graph(240,p), Graph(270,p), Graph(300,p)};
+
+    // for (int i = 0; i < 5; i++)
+    // {
+    //     trees[i].print();
+    //     cout << endl << endl << "NEXT TREE" << endl << endl;
+    // }
+
+    // for (int i = 0; i < 10; i++)
+    // {
+    //     randomTrees[i].print();
+    //     cout << endl << endl << "NEXT TREE" << endl << endl;
+    // }
+    
+    pause();
     return 0;
 }
